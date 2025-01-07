@@ -19,6 +19,7 @@ data {
 #include data/observation_model.stan
 #include data/params.stan
 #include data/estimate_infections_params.stan
+real<lower=0> g; // fake vol ww per person per day 
 }
 
 transformed data {
@@ -61,6 +62,7 @@ transformed parameters {
   vector[ot_h] reports;                                     // estimated reported cases
   vector[ot] obs_reports;                                   // observed estimated reported cases
   vector[estimate_r * (delay_type_max[gt_id] + 1)] gt_rev_pmf;
+  vector[t] ww_conc;                                       // basic ww concentration
 
   // GP in noise - spectral densities
   profile("update gp") {
@@ -111,6 +113,8 @@ transformed parameters {
       );
     }
   }
+  
+  ww_conc = infections * 5;
 
   // convolve from latent infections to mean of observations
   if (delay_id) {

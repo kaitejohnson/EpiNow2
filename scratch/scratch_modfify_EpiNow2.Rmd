@@ -10,7 +10,8 @@ library(here)
 library(ggplot2)
 library(EpiNow2)
 library(dplyr)
-library(cmdstanr)
+library(rstan)
+library(tidybayes)
 ```
 
 The goal of this Rmd is to practice modifying the inner code of EpiNow2.
@@ -35,3 +36,14 @@ estimates <- epinow(
   verbose = interactive()
 )
 ``` 
+Access rstan object and use tidybayes to access a specific generated quantity
+```{r}
+rstan_obj <- estimates$estimates$fit
+obs_reports <- rstan_obj |> tidybayes::spread_draws(obs_reports[t])
+```
+
+Now we will want to access our new transformed parameter, the wastewater
+concentration.
+```{r}
+ww_conc <- rstan_obj |> tidybayes::spread_draws(ww_conc[t])
+```
