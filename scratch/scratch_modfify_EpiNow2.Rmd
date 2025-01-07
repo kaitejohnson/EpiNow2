@@ -1,0 +1,37 @@
+---
+title: "scratch_modify_EpiNow2"
+output: html_document
+date: "2025-01-07"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(here)
+library(ggplot2)
+library(EpiNow2)
+library(dplyr)
+library(cmdstanr)
+```
+
+The goal of this Rmd is to practice modifying the inner code of EpiNow2.
+This will be done by modifying the stan model and the input data in EpiNow2 to generate a new example output (let's call it wastewater concentration. `c`), 
+which to start we will assume are directly proportional to per capita incident
+infections via a scale factor, which we will pass in as data, the genome copies per incident infection divided by the volume of wastewater produced per person per day, `g`. 
+
+Otherwise, we will use only and all of the default EpiNow2 settings in the getting started vignette. 
+
+```{r}
+reported_cases <- EpiNow2::example_confirmed
+example_generation_time <- EpiNow2::example_generation_time
+example_incubation_period <- EpiNow2::example_incubation_period
+reporting_delay <- LogNormal(mean = 2, sd = 1, max = 10)
+
+estimates <- epinow(
+  data = reported_cases,
+  generation_time = gt_opts(example_generation_time),
+  delays = delay_opts(example_incubation_period + reporting_delay),
+  rt = rt_opts(prior = LogNormal(mean = 2, sd = 0.2)),
+  stan = stan_opts(cores = 4, control = list(adapt_delta = 0.99)),
+  verbose = interactive()
+)
+``` 
