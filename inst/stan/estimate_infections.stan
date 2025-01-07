@@ -114,7 +114,7 @@ transformed parameters {
     }
   }
   
-  ww_conc = infections * 5;
+  ww_conc = infections * g;
 
   // convolve from latent infections to mean of observations
   if (delay_id) {

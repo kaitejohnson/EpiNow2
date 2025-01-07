@@ -284,6 +284,8 @@ estimate_infections <- function(data,
     trunc = truncation,
     time_points = stan_data$t - stan_data$seeding_time - stan_data$horizon
   ))
+  stan_data <- c(stan_data,
+                 g = 5)
 
   # Set up default settings
   args <- create_stan_args(
