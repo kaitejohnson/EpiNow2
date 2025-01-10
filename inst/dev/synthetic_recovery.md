@@ -2,7 +2,7 @@
 
 This file combines the figures generated in `rt.R` into a single file, used to 
 confirm that the fits to synthetic data data with different EpiNow2
-specifications works as expected. 
+specifications work as expected. 
 
 In all figures, the black dots indicate the ground truth R(t) estimate, used to 
 generate the synthetic data used for model fitting. 
