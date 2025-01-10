@@ -47,7 +47,6 @@ parameters {
   vector[fixed ? 0 : gp_type == 1 ? 2*M : M] eta;               // unconstrained noise
   // Rt
   array[estimate_r] real initial_infections;    // seed infections
-  array[estimate_r && seeding_time > 1 ? 1 : 0] real initial_growth; // seed growth rate
   array[bp_n > 0 ? 1 : 0] real<lower = 0> bp_sd; // standard deviation of breakpoint effect
   vector[bp_n] bp_effects;                   // Rt breakpoint effects
   // observation model
@@ -62,7 +61,13 @@ transformed parameters {
   vector[ot_h] reports;                                     // estimated reported cases
   vector[ot] obs_reports;                                   // observed estimated reported cases
   vector[estimate_r * (delay_type_max[gt_id] + 1)] gt_rev_pmf;
-  vector[t] ww_conc;                                       // basic ww concentration
+  array[estimate_r && seeding_time > 1 ? 1 : 0] real initial_growth; // seed growth rate
+
+  if (num_elements(initial_growth) > 0) {
+    initial_growth[1] = initial_growth_estimate +
+      initial_infections_estimate - initial_infections[1];
+  }
+
 
   // GP in noise - spectral densities
   profile("update gp") {
@@ -100,9 +105,13 @@ transformed parameters {
       );
     }
     profile("infections") {
+      real frac_obs = get_param(
+        frac_obs_id, params_fixed_lookup, params_variable_lookup, params_value,
+        params
+      );
       infections = generate_infections(
         R, seeding_time, gt_rev_pmf, initial_infections, initial_growth, pop,
-        future_time
+        future_time, obs_scale, frac_obs
       );
     }
   } else {
@@ -205,8 +214,7 @@ model {
     // priors on Rt
     profile("rt lp") {
       rt_lp(
-        initial_infections, initial_growth, bp_effects, bp_sd, bp_n,
-        seeding_time, prior_infections, prior_growth
+        initial_infections, bp_effects, bp_sd, bp_n, initial_infections_estimate
       );
     }
   }
