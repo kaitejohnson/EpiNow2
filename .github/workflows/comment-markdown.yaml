@@ -1,7 +1,7 @@
 name: "Comment with markdown"
 on:
   workflow_run:
-    workflows: ["Synthetic validation"] # the workflow that created the artifact
+    workflows: ["Synthetic validation check"] # the workflow that created the artifact
     types:
       - completed
 
