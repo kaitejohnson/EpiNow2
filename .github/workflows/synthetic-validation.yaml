@@ -64,14 +64,19 @@ jobs:
         run: |
           rmarkdown::render("inst/dev/synthetic_recovery.md")
         shell: Rscript {0}
-      
+
+      - name: Upload html as an artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: synthetic_recovery
+          retention-days: 5
+          path: inst/dev/synthetic_recovery.html
+     
+      - name: Generate Playgrounds
+        uses: actions/checkout@v3
+
       - name: Build and generate
         uses: live-codes/preview-in-livecodes@v1
         with:
-          name: synthetic_recovery
-          path: inst/dev/synthetic_recovery.html
-  
-
-
-
-          
+          build-command: "inst/dev/synthetic_recovery.html"
+          base-url: "https://{{LC::REF}}.preview-in-livecodes-demo.pages.dev"
