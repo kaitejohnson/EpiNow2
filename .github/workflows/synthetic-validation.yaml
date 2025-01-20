@@ -64,8 +64,16 @@ jobs:
         run: |
           rmarkdown::render("inst/dev/synthetic_recovery.md")
         shell: Rscript {0}
-  
 
+  build_and_prepare:
+    runs-on: ubuntu-latest
+    name: Generate Playgrounds
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
 
-
-          
+      - name: Build and generate
+        uses: live-codes/preview-in-livecodes@v1
+        with:
+          build-command: "inst/dev/synthetic_recovery.html"
+          base-url: "https://{{LC::REF}}.preview-in-livecodes-demo.pages.dev"
