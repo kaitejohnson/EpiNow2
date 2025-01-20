@@ -64,15 +64,6 @@ jobs:
         run: |
           rmarkdown::render("inst/dev/synthetic_recovery.md")
         shell: Rscript {0}
-
-      
-      - name: Build and generate # Try putting in livecodes directory?
-        uses: live-codes/preview-in-livecodes@v1
-        with:
-          name: synthetic_recovery
-          path: |
-            .livecodes/
-            inst/dev/synthetic_recovery.html
   
 
 
