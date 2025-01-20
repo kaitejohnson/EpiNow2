@@ -64,12 +64,8 @@ jobs:
         run: |
           rmarkdown::render("inst/dev/synthetic_recovery.md")
         shell: Rscript {0}
-
-  build_and_prepare:
-    runs-on: ubuntu-latest
-    name: Generate Playgrounds
-    steps:
-      - name: Checkout
+     
+      - name: Generate Playgrounds
         uses: actions/checkout@v3
 
       - name: Build and generate
